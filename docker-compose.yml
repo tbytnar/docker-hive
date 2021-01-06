@@ -50,7 +50,25 @@ services:
       - "8888:8888"
     command: bash -c "jupyter notebook --NotebookApp.token='' --allow-root --no-browser --ip=0.0.0.0"
     tty: true
-
+  spark-master:
+    image: tbytnar/portable-hadoop:spark-master
+    ports:
+      - "8080:8080"
+      - "8889:8888"
+      - "4040:4040"
+    depends_on: ["spark-worker1","spark-worker2"]
+  spark-worker1:
+    environment: 
+      - MASTER_CONTAINER_NAME=spark-master
+    image: tbytnar/portable-hadoop:spark-worker
+    ports:
+      - "8081:8080"
+  spark-worker2:
+    environment: 
+      - MASTER_CONTAINER_NAME=spark-master
+    image: tbytnar/portable-hadoop:spark-worker
+    ports:
+      - "8082:8080"
 volumes:
   namenode:
   datanode:
