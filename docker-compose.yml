@@ -30,6 +30,7 @@ services:
       SERVICE_PRECONDITION: "hive-metastore:9083"
     ports:
       - "10000:10000"
+    depends_on: ["namenode","datanode","hive-metastore","hive-metastore-postgresql","client"]
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     env_file:
@@ -41,11 +42,16 @@ services:
       - "9083:9083"
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
-  presto-coordinator:
-    image: shawnzhu/prestodb:0.181
-    ports:
-      - "8080:8080"
+  client:
+    image: tbytnar/portable-hadoop:client
+    volumes:
+      - client:/tmp/client
+    ports: 
+      - "8888:8888"
+    command: bash -c "jupyter notebook --NotebookApp.token='' --allow-root --no-browser --ip=0.0.0.0"
+    tty: true
 
 volumes:
   namenode:
   datanode:
+  client:
