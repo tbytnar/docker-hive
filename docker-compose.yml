@@ -43,7 +43,7 @@ services:
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
   client:
-    image: tbytnar/portable-hadoop:client
+    image: tbytnar/portable-hadoop:jupyter-client
     volumes:
       - client:/tmp/client
     ports: 
