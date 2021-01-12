@@ -3,6 +3,7 @@ version: "3"
 services:
   namenode:
     image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    container_name: namenode
     volumes:
       - namenode:/hadoop/dfs/name
     environment:
@@ -13,6 +14,7 @@ services:
       - "50070:50070"
   datanode:
     image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
+    container_name: datanode
     volumes:
       - datanode:/hadoop/dfs/data
     env_file:
@@ -21,8 +23,10 @@ services:
       SERVICE_PRECONDITION: "namenode:50070"
     ports:
       - "50075:50075"
+
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-server
     env_file:
       - ./hadoop-hive.env
     environment:
@@ -33,6 +37,7 @@ services:
     depends_on: ["namenode","datanode","hive-metastore","hive-metastore-postgresql","client"]
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
+    container_name: hive-metastore
     env_file:
       - ./hadoop-hive.env
     command: /opt/hive/bin/hive --service metastore
@@ -42,8 +47,10 @@ services:
       - "9083:9083"
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
+    container_name: hive-metastore-postgresql
   client:
     image: tbytnar/portable-hadoop:jupyter-client
+    container_name: client
     volumes:
       - client:/tmp/client
     ports: 
@@ -52,6 +59,7 @@ services:
     tty: true
   spark-master:
     image: tbytnar/portable-hadoop:spark-master
+    container_name: spark-master
     ports:
       - "8080:8080"
       - "8889:8888"
@@ -61,12 +69,14 @@ services:
     environment: 
       - MASTER_CONTAINER_NAME=spark-master
     image: tbytnar/portable-hadoop:spark-worker
+    container_name: spark-worker1
     ports:
       - "8081:8080"
   spark-worker2:
     environment: 
       - MASTER_CONTAINER_NAME=spark-master
     image: tbytnar/portable-hadoop:spark-worker
+    container_name: spark-worker2
     ports:
       - "8082:8080"
 volumes:
