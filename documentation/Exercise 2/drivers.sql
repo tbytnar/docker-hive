@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS testing.drivers;
+DROP TABLE IF EXISTS truckingco.drivers;
 
-CREATE EXTERNAL TABLE testing.drivers
+CREATE EXTERNAL TABLE truckingco.drivers
 (
     id INT,
     firstname STRING,
@@ -13,4 +13,4 @@ ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH "/tmp/drivers.csv" OVERWRITE INTO TABLE testing.drivers;
+LOAD DATA INPATH "/user/hive/flatfiles/drivers.csv" OVERWRITE INTO TABLE truckingco.drivers;

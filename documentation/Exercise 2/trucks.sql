@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS testing.trucks;
+DROP TABLE IF EXISTS truckingco.trucks;
 
-CREATE TABLE testing.trucks (
+CREATE TABLE truckingco.trucks (
   `datetime` STRING,
   shipping_id STRING,
   shipping_name STRING,
@@ -16,4 +16,4 @@ WITH SERDEPROPERTIES (
 )
 STORED AS TEXTFILE;
 
-LOAD DATA LOCAL INPATH "/tmp/trucks.txt" OVERWRITE INTO TABLE testing.trucks;
+LOAD DATA INPATH "/user/hive/flatfiles/trucks.txt" OVERWRITE INTO TABLE truckingco.trucks;
