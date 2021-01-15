@@ -23,7 +23,40 @@ services:
       SERVICE_PRECONDITION: "namenode:50070"
     ports:
       - "50075:50075"
-
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop2.7.4-java8
+    container_name: resourcemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 namenode:50070 datanode:50075"
+    env_file:
+      - ./hadoop-hive.env
+    ports:
+      - "8088:8088"
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop2.7.4-java8
+    container_name: historyserver
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 namenode:50070 datanode:50075 resourcemanager:8088"
+    volumes:
+      - hadoop_historyserver:/hadoop/yarn/timeline
+    env_file:
+      - ./hadoop-hive.env
+    #command: ./opt/hadoop-2.7.4/sbin/mr-jobhistory-daemon.sh start historyserver
+    ports:
+      - "8188:8188"
+      - "19888:19888"
+  nodemanager1:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop2.7.4-java8
+    container_name: nodemanager
+    restart: always
+    environment:
+      SERVICE_PRECONDITION: "namenode:8020 namenode:50070 datanode:50075 resourcemanager:8088"
+    env_file:
+      - ./hadoop-hive.env
+    ports:
+      - "8042:8042"
   hive-server:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-server
@@ -34,7 +67,7 @@ services:
       SERVICE_PRECONDITION: "hive-metastore:9083"
     ports:
       - "10000:10000"
-    depends_on: ["namenode","datanode","hive-metastore","hive-metastore-postgresql","client"]
+    depends_on: ["namenode","datanode","hive-metastore","hive-metastore-postgresql","client","historyserver","resourcemanager","nodemanager1"]
   hive-metastore:
     image: bde2020/hive:2.3.2-postgresql-metastore
     container_name: hive-metastore
@@ -48,6 +81,8 @@ services:
   hive-metastore-postgresql:
     image: bde2020/hive-metastore-postgresql:2.3.0
     container_name: hive-metastore-postgresql
+    volumes:
+      - postgresql:/var/lib/postgresql/data
   client:
     image: tbytnar/portable-hadoop:jupyter-client
     container_name: client
@@ -83,3 +118,5 @@ volumes:
   namenode:
   datanode:
   client:
+  hadoop_historyserver:
+  postgresql:
