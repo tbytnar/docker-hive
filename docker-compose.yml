@@ -47,7 +47,7 @@ services:
     ports:
       - "8188:8188"
       - "19888:19888"
-  nodemanager1:
+  nodemanager:
     image: tbytnar/portable-hadoop:hadoop-nodemanager
     container_name: nodemanager
     restart: always
@@ -64,25 +64,23 @@ services:
       - ./hadoop-hive.env
     environment:
       HIVE_CORE_CONF_javax_jdo_option_ConnectionURL: "jdbc:postgresql://hive-metastore/metastore"
-      SERVICE_PRECONDITION: "hive-metastore:9083"
+      SERVICE_PRECONDITION: "hive-metastore:9083 hive-metastore:5432"
     ports:
       - "10000:10000"
-    depends_on: ["namenode","datanode","hive-metastore","hive-metastore-postgresql","client","historyserver","resourcemanager","nodemanager1"]
+    depends_on: ["namenode","datanode","hive-metastore","client","historyserver","resourcemanager","nodemanager"]
   hive-metastore:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    image: tbytnar/portable-hadoop:hive-metastore
     container_name: hive-metastore
     env_file:
       - ./hadoop-hive.env
-    command: /opt/hive/bin/hive --service metastore
     environment:
-      SERVICE_PRECONDITION: "namenode:50070 datanode:50075 hive-metastore-postgresql:5432"
-    ports:
-      - "9083:9083"
-  hive-metastore-postgresql:
-    image: bde2020/hive-metastore-postgresql:2.3.0
-    container_name: hive-metastore-postgresql
+      SERVICE_PRECONDITION: "namenode:50070 datanode:50075"
     volumes:
       - postgresql:/var/lib/postgresql/data
+    ports:
+      - "9083:9083"
+      - "5432:5432"
+    depends_on: ["namenode","datanode"]
   client:
     image: tbytnar/portable-hadoop:jupyter-client
     container_name: client
