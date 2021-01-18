@@ -6,4 +6,7 @@ regex = re.compile('^(\S+) (\S+) (\S+) \[([\w:/]+\s[+\-]\d{4})\] \"(\S+) (\S+)\s
 for line in sys.stdin:
     line = line.strip()
     res = regex.match(line)
-    print('\t'.join(list(res.groups())))
+    try:
+        print('\t'.join(list(res.groups())))
+    except:
+        print('bad line')

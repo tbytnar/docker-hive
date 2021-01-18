@@ -2,7 +2,7 @@ version: "3"
 
 services:
   namenode:
-    image: bde2020/hadoop-namenode:2.0.0-hadoop2.7.4-java8
+    image: tbytnar/portable-hadoop:hadoop-namenode
     container_name: namenode
     volumes:
       - namenode:/hadoop/dfs/name
@@ -13,7 +13,7 @@ services:
     ports:
       - "50070:50070"
   datanode:
-    image: bde2020/hadoop-datanode:2.0.0-hadoop2.7.4-java8
+    image: tbytnar/portable-hadoop:hadoop-datanode
     container_name: datanode
     volumes:
       - datanode:/hadoop/dfs/data
@@ -24,7 +24,7 @@ services:
     ports:
       - "50075:50075"
   resourcemanager:
-    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop2.7.4-java8
+    image: tbytnar/portable-hadoop:hadoop-resourcemanager
     container_name: resourcemanager
     restart: always
     environment:
@@ -34,7 +34,7 @@ services:
     ports:
       - "8088:8088"
   historyserver:
-    image: bde2020/hadoop-historyserver:2.0.0-hadoop2.7.4-java8
+    image: tbytnar/portable-hadoop:hadoop-historyserver
     container_name: historyserver
     restart: always
     environment:
@@ -43,12 +43,12 @@ services:
       - hadoop_historyserver:/hadoop/yarn/timeline
     env_file:
       - ./hadoop-hive.env
-    #command: ./opt/hadoop-2.7.4/sbin/mr-jobhistory-daemon.sh start historyserver
+    #command: ./opt/hadoop-*/sbin/mr-jobhistory-daemon.sh start historyserver
     ports:
       - "8188:8188"
       - "19888:19888"
   nodemanager1:
-    image: bde2020/hadoop-nodemanager:2.0.0-hadoop2.7.4-java8
+    image: tbytnar/portable-hadoop:hadoop-nodemanager
     container_name: nodemanager
     restart: always
     environment:
@@ -58,7 +58,7 @@ services:
     ports:
       - "8042:8042"
   hive-server:
-    image: bde2020/hive:2.3.2-postgresql-metastore
+    image: tbytnar/portable-hadoop:hadoop-hiveserver
     container_name: hive-server
     env_file:
       - ./hadoop-hive.env
