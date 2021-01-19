@@ -9,3 +9,6 @@ docker build --no-cache --pull --rm -f "src\hive-base\Dockerfile" -t tbytnar/por
 docker push tbytnar/portable-hadoop:hive-base
 docker build --no-cache --pull --rm -f "src\hiveserver\Dockerfile" -t tbytnar/portable-hadoop:hadoop-hiveserver "src\hiveserver"
 docker build --no-cache --pull --rm -f "src\hive-metastore\Dockerfile" -t tbytnar/portable-hadoop:hive-metastore "src\hive-metastore"
+
+
+docker build --no-cache --pull --rm -f "src\client\Dockerfile" -t tbytnar/portable-hadoop:client .

@@ -82,14 +82,15 @@ services:
       - "5432:5432"
     depends_on: ["namenode","datanode"]
   client:
-    image: tbytnar/portable-hadoop:jupyter-client
+    image: tbytnar/portable-hadoop:client
     container_name: client
     volumes:
       - client:/tmp/client
     ports: 
       - "8888:8888"
-    command: bash -c "jupyter notebook --NotebookApp.token='' --allow-root --no-browser --ip=0.0.0.0"
     tty: true
+    env_file:
+      - ./hadoop-hive.env
   spark-master:
     image: tbytnar/portable-hadoop:spark-master
     container_name: spark-master
